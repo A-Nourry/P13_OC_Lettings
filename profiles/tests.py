@@ -1,3 +1,15 @@
-from django.test import TestCase
+import pytest
+from django.urls import reverse
+from django.test import Client
 
-# Create your tests here.
+
+@pytest.fixture
+def client():
+    return Client()
+
+
+@pytest.mark.django_db
+def test_index(client):
+    url = reverse("profiles:index")
+    response = client.get(url)
+    assert response.status_code == 200
