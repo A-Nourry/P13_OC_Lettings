@@ -31,21 +31,8 @@ jobs:
           name: PEP8 tests
           command: flake8
 
-      - deploy:
-          name: Deploy to Heroku
-          command: |
-            heroku container:login
-            heroku container:push web --app oc-lettings-web-app
-            heroku container:release web --app oc-lettings-web-app
-
 workflows:
   version: 2
   build-and-deploy:
     jobs:
       - build
-      - deploy:
-          requires:
-            - build
-          filters:
-            branches:
-              only: main
