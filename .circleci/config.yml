@@ -1,0 +1,51 @@
+version: 2.1
+
+orbs:
+  python: circleci/python@2.1.1
+  heroku: circleci/heroku@2.0.0
+  docker: circleci/docker@2.2.0
+
+jobs:
+  build:
+
+    docker:
+      - image: cimg/python:3.9
+
+    steps:
+      - checkout
+      - run:
+          name: update pip
+          command: python -m pip install --upgrade pip
+
+      - run:
+          name: Install Python Dependencies
+          command: |
+            python3 -m venv env
+            . env/bin/activate && pip install -r requirements.txt
+
+      - run:
+          name: Run tests
+          command: pytest
+      
+      - run:
+          name: PEP8 tests
+          command: flake8
+
+      - deploy:
+          name: Deploy to Heroku
+          command: |
+            heroku container:login
+            heroku container:push web --app oc-lettings-web-app
+            heroku container:release web --app oc-lettings-web-app
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: main
