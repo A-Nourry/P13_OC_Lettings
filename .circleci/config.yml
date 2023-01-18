@@ -67,7 +67,7 @@ workflows:
           filters:
             branches:
               only: main
-      - deploy_heroku:
+      - deploy-heroku:
           requires:
             - build_push_docker_image
           filters:
