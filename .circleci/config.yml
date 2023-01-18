@@ -31,8 +31,21 @@ jobs:
           name: PEP8 tests
           command: flake8
 
+   deploy-heroku:
+        machine: true
+        steps:
+            - checkout
+            - run:
+                name: Build and push Docker image to Heroku
+                command: |
+            sudo curl https://cli-assets.heroku.com/install.sh | sh
+            HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:login
+            HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push -a oc-lettings-web-app web
+            HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:release -a oc-lettings-web-app web
+
 workflows:
   version: 2
   build-and-deploy:
     jobs:
       - build
+      - deploy-heroku
