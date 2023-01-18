@@ -31,6 +31,19 @@ jobs:
           name: PEP8 tests
           command: flake8
 
+  build_push_docker_image:
+    docker:
+      - image: cimg/python:3.9.4
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build and push docker image
+          command: |
+            docker build -t anourry13/oc-lettings:$CIRCLE_SHA1 .
+            echo $DOCKER_PASSWORD | docker login --username anourry13 --password-stdin
+            docker push anourry13/oc-lettings:$CIRCLE_SHA1
+
   deploy-heroku:
     machine: true
     steps:
@@ -48,4 +61,15 @@ workflows:
   build-and-deploy:
     jobs:
       - build
-      - deploy-heroku
+      - build_push_docker_image:
+          requires:
+            - build
+          filters:
+            branches:
+              only: main
+      - deploy_heroku:
+          requires:
+            - build_push_docker_image
+          filters:
+            branches:
+              only: main
