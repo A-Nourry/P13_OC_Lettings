@@ -8,9 +8,7 @@ orbs:
 jobs:
   build:
 
-    docker:
-      - image: cimg/python:3.9.4
-
+    executor: python/default
     steps:
       - checkout
       - run:
