@@ -25,11 +25,15 @@ jobs:
 
       - run:
           name: Run tests
-          command: pytest
+          command: |
+            . venv/bin/activate
+            pytest
       
       - run:
           name: PEP8 tests
-          command: flake8
+          command: |
+            . venv/bin/activate
+            flake8
 
   build_push_docker_image:
     docker:
