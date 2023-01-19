@@ -33,7 +33,7 @@ jobs:
             . env/bin/activate
             flake8
 
-  build_push_docker_image:
+  build-push-docker-image:
     docker:
       - image: cimg/python:3.9.4
     steps:
@@ -63,5 +63,9 @@ workflows:
   build-and-deploy:
     jobs:
       - build
-      - build_push_docker_image
-      - deploy-heroku
+      - build-push-docker-image:
+          requires:
+            - build
+      - deploy-heroku:
+          requires:
+            - build-push-docker-image
