@@ -12,7 +12,7 @@ RUN python -m pip install --user --upgrade pip && pip install -r requirements.tx
 
 COPY . /app/
 
-EXPOSE 8000
+EXPOSE $PORT
 
 RUN python manage.py makemigrations
 RUN python manage.py migrate
