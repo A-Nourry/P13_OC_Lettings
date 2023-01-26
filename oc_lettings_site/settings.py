@@ -9,7 +9,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 env = Env()
 env.read_env()
 DEBUG = env('DEBUG', default=False)
-print(env("SENTRY_DSN"))
+print(env('SENTRY_DSN'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
