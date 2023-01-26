@@ -42,9 +42,9 @@ jobs:
       - run:
           name: Build and push docker image
           command: |
-            docker build -t $DOCKER_USERNAME/oc-lettings:$CIRCLE_SHA1 .
+            docker build -t $DOCKER_USERNAME/oc-lettings:$CIRCLE_BUILD_NUM .
             echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
-            docker push $DOCKER_USERNAME/oc-lettings:$CIRCLE_SHA1
+            docker push $DOCKER_USERNAME/oc-lettings:$CIRCLE_BUILD_NUM
 
   deploy-heroku:
     machine: true
