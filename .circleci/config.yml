@@ -35,17 +35,13 @@ jobs:
     docker:
       - image: cimg/python:3.9.4
 
-    environment:
-      SECRET_KEY: ${SECRET_KEY}
-      SENTRY_DSN: ${SENTRY_DSN}
-      
     steps:
       - checkout
       - setup_remote_docker
       - run:
           name: Build and push docker image
           command: |
-            docker build -t $DOCKER_USERNAME/oc-lettings:$CIRCLE_SHA1 . --build-arg SECRET_KEY=${SECRET_KEY} --build-arg SENTRY_DSN=${SENTRY_DSN}
+            docker build -t $DOCKER_USERNAME/oc-lettings:$CIRCLE_SHA1 . --build-arg SECRET_KEY=$SECRET_KEY --build-arg SENTRY_DSN=$SENTRY_DSN
             echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
             docker push $DOCKER_USERNAME/oc-lettings:$CIRCLE_SHA1
 
