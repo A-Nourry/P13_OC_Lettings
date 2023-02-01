@@ -6,7 +6,7 @@ orbs:
   docker: circleci/docker@2.2.0
 
 jobs:
-  build:
+  build-and-tests:
 
     executor: python/default
     steps:
@@ -63,10 +63,10 @@ jobs:
 workflows:
   build-and-deploy:
     jobs:
-      - build
+      - build-and-tests
       - build-push-docker-image:
           requires:
-            - build
+            - build-and-tests
       - deploy-heroku:
           requires:
             - build-push-docker-image
