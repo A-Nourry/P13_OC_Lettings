@@ -75,3 +75,68 @@ Utilisation de PowerShell, comme ci-dessus sauf :
 
 - Pour activer l'environnement virtuel, `.\venv\Scripts\Activate.ps1` 
 - Remplacer `which <my-command>` par `(Get-Command <my-command>).Path`
+
+## Déploiement
+
+Le déploiement a pour but de mettre l'application en production sur la plateforme Heroku à l'aide de Docker et CircleCI.
+
+Dès lors que des modifications seront apportées à la branche main sur Github, le pipeline CircleCI déclenchera le déploiement en trois étapes : 
+
+- La première étape consiste à créer l'application via les fichiers du dépôt github, puis de passer les différents tests du code. Si les tests échouent, l'étape suivante ne sera pas déclenchée. 
+- Ensuite, la deuxième étape va créer une image docker puis la pousser sur le dépôt docker distant (DockerHub). 
+- Enfin, la troisième étape, va permettre de conteneuriser l'application à l'aide de l'image de votre DockerHub, puis la déployer sur Heroku.
+
+Chaque étapes aura besoin que la précédente passe pour déclencher la suivante, si ces trois étapes passent, votre application sera correctement déployée.
+
+### Prérequis
+
+- Un compte [CircleCI](https://circleci.com/signup/)
+- Un compte [DockerHub](https://hub.docker.com/)
+- Un compte et une application créé sur [Heroku](https://id.heroku.com/login) 
+
+### CircleCI
+Tout d'abord assurez-vous que vous avez lié CircleCI à votre Github. Ensuite, ajoutez votre projet github à votre dashboard CircleCI. Vous n'avez pas besoin que CircleCI vous génère un fichier `config.yml`, car il est déjà présent dans le dossier `.circleci` de l'application.
+
+Le fichier `config.yml` est utilisé pour définir les étapes et les configurations pour CircleCI lors de la construction, du déploiement et des tests du projet.
+
+Maintenant, vous aurez besoin de déclarer les variables d'environnement suivantes, dans l'interface web de CircleCI, Project Settings > Environment Variables : 
+- DOCKER_PASSWORD : Mot de passe de votre compte DockerHub
+
+- DOCKER_USERNAME : Identifiant de votre compte DockerHub
+
+- HEROKU_API_KEY : Clé d'API de votre compte Heroku
+
+- HEROKU_APP_NAME : Nom de vottre application Heroku
+
+- SECRET_KEY : Clé secrète de l'application Django
+
+### Docker
+
+Les instructions pour la création de l'image docker se trouvent dans le fichier `Dockerfile` de l'application. La création et le déploiement sur votre compte se feront automatiquement à l'aide du fichier `config.yml` de CircleCI.
+
+Assurez-vous juste de bien renseigner vos informations d'identification dans les variables d'environnement de CircleCI. (DOCKER_PASSWORD et DOCKER_USERNAME)
+
+### Heroku
+
+Sur l'interface web d'Heroku, créer une nouvelle application via `New > Create new app`.
+
+Il faudra utiliser la méthode `Container Registry` pour déployer l'application sur Heroku. Les étapes sont définies dans le fichier `config.yml`.
+
+Téléchargez et installez la console [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) afin de récupérer la clé d'API via la commande ```heroku auth:token```
+
+Sur CircleCI assurez vous de bien avoir déclarer les variables d'environnement HEROKU_API_KEY et HEROKU_APP_NAME.
+
+## Surveillance via Sentry
+
+Sentry permet de suivre les bugs et les erreurs en temps réel de l'application, de les enregistrer et de les classer.
+
+### Prérequis
+- Un compte [Sentry](https://sentry.io/auth/login/)
+
+### Configuration
+
+Après avoir créé un compte, créez un nouveau projet à l'aide de `Create Project`.
+
+Sur la page de configuration de votre projet Sentry, récupérer votre DSN Sentry afin de le déclarer dans les variables d'environnement de CircleCI.
+
+Pour tester Sentry, déclenchez un bug a l'aide de la vue `sentry-debug` disponible via l'url http://localhost:8000/sentry-debug ou via https://heroku-app-name.herokuapp.com/sentry-debug
