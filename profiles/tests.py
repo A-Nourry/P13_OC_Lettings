@@ -31,7 +31,7 @@ def test_profiles():
         email="test@gmail.com",
         password="password",
     )
-    Profile.objects.create(user=user, favorite_city="Paris")
+    Profile.objects.create(user=user, favorite_city="Mulhouse")
     path = reverse("profiles:profile", kwargs={"username": user.username})
     response = client.get(path)
     content = response.content.decode()

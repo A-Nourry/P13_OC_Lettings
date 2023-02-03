@@ -28,17 +28,17 @@ def test_lettings():
 
     adress = Address.objects.create(
         number=1,
-        street="sesame street",
-        city="Los Angeles",
-        state="LA",
-        zip_code=75012,
+        street="Ipswich",
+        city="Innsmouth",
+        state="HP",
+        zip_code=7217,
         country_iso_code="USA",
     )
-    Letting.objects.create(title="Beautifull place", address=adress)
+    Letting.objects.create(title="Dagon city", address=adress)
     path = reverse("lettings:lettings", kwargs={"letting_id": 1})
     response = client.get(path)
     content = response.content.decode()
-    expected_content = "<title>Beautifull place</title>"
+    expected_content = "<title>Dagon city</title>"
 
     assert expected_content in content
     assert response.status_code == 200
