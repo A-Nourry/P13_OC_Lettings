@@ -46,7 +46,7 @@ jobs:
       - run:
           name: Build and push docker image
           command: |
-            docker build --build-arg SECRET_KEY=$SECRET_KEY SENTRY_DSN=$SENTRY_DSN -t $DOCKER_USERNAME/oc-lettings:$CIRCLE_SHA1 .
+            docker build --build-arg SECRET_KEY=$SECRET_KEY --build-arg SENTRY_DSN=$SENTRY_DSN -t $DOCKER_USERNAME/oc-lettings:$CIRCLE_SHA1 .
             echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
             docker push $DOCKER_USERNAME/oc-lettings:$CIRCLE_SHA1
 
