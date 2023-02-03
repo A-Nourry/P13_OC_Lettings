@@ -67,6 +67,12 @@ workflows:
       - build-push-docker-image:
           requires:
             - build-and-tests
+          filters:
+            branches:
+              only: main
       - deploy-heroku:
           requires:
             - build-push-docker-image
+          filters:
+            branches:
+              only: main
